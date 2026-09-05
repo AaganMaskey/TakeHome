@@ -28,44 +28,31 @@ certifications.
 
 ## Query Details
 
-### QN1 — List All Employees
+### QN1-List All Employees
 Simple projection of `employee_id`, `name`, and `department` from `employees`.
 No joins or filters; returns all rows.
 
-### QN2 — Fully Completed Employees
+### QN2-Fully Completed Employees
 Inner-joins `employees` to `employee_trainings`, groups by employee, and uses
 `HAVING COUNT(et.id) = SUM(status = 'Completed')` to isolate employees whose
 assigned trainings are **all** completed (zero pending). Employees with no
 assigned trainings are excluded because of the inner join.
 
-### QN3 — Total Trainings Per Employee
+### QN3-Total Trainings Per Employee
 Same idea as QN2 but uses a `LEFT JOIN`, so employees with **no** assigned
 trainings still appear in the output (with a count of 0) instead of being
 dropped.
 
-### QN4 — Certifications Expiring in 30 Days
+### QN4-Certifications Expiring in 30 Days
 Joins `certifications` to `employees` and filters on
 `expiry_date BETWEEN DATE('now') AND DATE('now', '+30 days')`, an inclusive
 window from today through the next 30 days. Sorted by soonest expiry first.
 
-> ⚠️ Uses SQLite-specific `DATE('now', ...)` syntax — needs adjustment for
-> MySQL (`CURDATE()`), PostgreSQL (`CURRENT_DATE`), or SQL Server (`GETDATE()`).
-
-### QN5 — Not Validated
+### QN5-Not Validated
 This question depends on a `due_date` column on `employee_trainings`, which
 does **not** exist in the current schema (only `status` is tracked). Marked
 as unanswerable until the schema is updated or the requirement is clarified.
 
-### QN6 — Top 5 by Completed Trainings
+### QN6-Top 5 by Completed Trainings
 Filters `employee_trainings` to `status = 'Completed'`, groups by employee,
 counts completions, and returns the top 5 in descending order.
-
-> 💡 Consider adding a secondary `ORDER BY e.employee_id` for deterministic
-> tie-breaking among employees with equal completed-training counts.
-
-## Known Gaps / Follow-ups
-
-- **QN5** needs schema confirmation: either add a `due_date` column to
-  `employee_trainings`, or clarify what the original question intended.
-- **QN4** should be ported to standard SQL if this needs to run outside SQLite.
-- **QN6** ties are currently broken arbitrarily by SQLite's default row order.
