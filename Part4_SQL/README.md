@@ -26,33 +26,33 @@ certifications.
 | [QN6.sql](./QN6.sql) | Top 5 employees by number of completed trainings | ✅ Valid |
 | [0_CreateAndInsert.sql](./0_CreateAndInsert.sql) | Schema definition + sample data | — Setup file |
 
-## Query Details
+## Write SQL queries for:
 
-### QN1-List All Employees
+### QN1-Return all employees and their departments 
 Simple projection of `employee_id`, `name`, and `department` from `employees`.
 No joins or filters; returns all rows.
 
-### QN2-Fully Completed Employees
+### QN2-Return employees who have completed all assigned trainings
 Inner-joins `employees` to `employee_trainings`, groups by employee, and uses
 `HAVING COUNT(et.id) = SUM(status = 'Completed')` to isolate employees whose
 assigned trainings are **all** completed (zero pending). Employees with no
 assigned trainings are excluded because of the inner join.
 
-### QN3-Total Trainings Per Employee
+### QN3-Count trainings per employee
 Same idea as QN2 but uses a `LEFT JOIN`, so employees with **no** assigned
 trainings still appear in the output (with a count of 0) instead of being
 dropped.
 
-### QN4-Certifications Expiring in 30 Days
+### QN4-Certifications expiring within 30 days
 Joins `certifications` to `employees` and filters on
 `expiry_date BETWEEN DATE('now') AND DATE('now', '+30 days')`, an inclusive
 window from today through the next 30 days. Sorted by soonest expiry first.
 
-### QN5-Not Validated
+### QN5- Employees with overdue trainings
 This question depends on a `due_date` column on `employee_trainings`, which
 does **not** exist in the current schema (only `status` is tracked). Marked
 as unanswerable until the schema is updated or the requirement is clarified.
 
-### QN6-Top 5 by Completed Trainings
+### QN6-Top 5 employees by completed trainings
 Filters `employee_trainings` to `status = 'Completed'`, groups by employee,
 counts completions, and returns the top 5 in descending order.
